@@ -62,7 +62,7 @@ export function getOrAskConfig(LOCAL_STORAGE_KEY = 'yjsapp-renfollow', saveToLoc
   if (saveToLocalStorage) {
     localStorage.setItem(LOCAL_STORAGE_KEY, config.join(':'))
   }
-  return config
+  return config as [string, string, string]
 }
 
 export function setupYjs(piniaUse: Pinia, { websocket = true, indexeddb = true, pinia = true } = {}) {
