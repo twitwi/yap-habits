@@ -6,6 +6,8 @@ export const useLocalStore = defineStore('local', () => {
   // like setup() in a component
   const userName = ref('bob')
   return { userName }
+}, {
+  persist: true, // persisted in localStorage
 })
 
 export const useMainStore = defineStore(
@@ -16,6 +18,6 @@ export const useMainStore = defineStore(
     return { data }
   },
   {
-    sharing: true,
+    sharing: true, // shared through yjs (+ local IDB)
   },
 )
