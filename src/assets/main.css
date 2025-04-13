@@ -18,14 +18,15 @@ header {
   font-size: 5em;
   display: flex;
   justify-content: center;
+  gap: .5em;
 
   div {
     position: relative;
     cursor: pointer;
     color: var(--c);
-    line-height: 1em;
-    height: 1em;
-    width: 1em;
+    line-height: 5rem;
+    height: 5rem;
+    width: 5rem;
   }
 
   .username {
@@ -54,5 +55,50 @@ h1 {
   }
   span:nth-child(2) {
     flex-grow: 1;
+    &.today {
+      color: var(--d);
+    }
+  }
+}
+
+.list-of-done {
+  min-height: 9em;
+  padding-bottom: 2em;
+
+  &>div {
+    position: relative;
+    background-color: var(--d) !important;
+    .quantity {
+      position: absolute;
+      top: 0;
+      right: 0;
+      font-size: 1rem;
+      height: 1rem;
+      line-height: 1rem;
+      color: var(--b);
+    }
+  }
+}
+
+.list-of-templates, .list-of-done {
+  display: flex;
+  gap: 1em;
+  padding: 1em;
+  width: 100vw;
+  flex-wrap: wrap;
+
+  &>div {
+    border: 3px solid var(--color, var(--d));
+    border-radius: .5em;
+    padding: .25em;
+    color: var(--b);
+    background-color: color-mix(in lab, var(--color, white), var(--d));
+    line-height: 1.2em;
+    /*word-wrap: anywhere;*/
+    display: flex;
+    align-items: center;
+    text-align: center;
+    width: 5rem;
+    height: 5rem;
   }
 }
