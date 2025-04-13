@@ -65,6 +65,34 @@ function templateStyle(t: Log | LogTemplate) {
   }
 }
 
+function clickLog(l: Log) {
+  // prompt for new quantity, if empty prompt for deletion
+  const newQuantity = prompt('Enter new quantity:', l.quantity.toString())
+  if (newQuantity === null) {
+    return
+  }
+  if (newQuantity.trim() === '' || newQuantity === '0') {
+    // prompt for deletion
+    const deleteLog = confirm('Delete this log?')
+    if (deleteLog) {
+      const dayLogs = main.data.logs?.[local.userName]?.[props.day]
+      if (dayLogs) {
+        const index = dayLogs.indexOf(l)
+        if (index !== -1) {
+          dayLogs.splice(index, 1)
+        }
+      }
+    }
+    return
+  }
+  const quantity = parseInt(newQuantity)
+  if (isNaN(quantity)) {
+    alert('Invalid quantity')
+    return
+  }
+  l.quantity = quantity
+}
+
 function clickTemplate(t: LogTemplate) {
   const log: Log = {
     activity: t.activity,
@@ -90,6 +118,7 @@ function clickTemplate(t: LogTemplate) {
       v-for="(log, index) in logs"
       :key="index"
       :style="templateStyle(log)"
+      @click="clickLog(log)"
     >
       <span>{{ shortClean(log.activity) }}</span>
       <span class="quantity">{{ log.quantity }}</span>
