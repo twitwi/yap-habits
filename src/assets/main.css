@@ -1,1 +1,31 @@
 @import './base.css';
+
+html, body, div#app {
+  margin: 0;
+  padding: 0;
+}
+
+header {
+  padding: 0;
+  margin: 0;
+}
+
+h1 {
+  --c: #42b983;
+  --b: white;
+  color: var(--c);
+  background-color: var(--b);
+
+  text-align: center;
+  display: flex;
+
+  span:first-child, span:last-child {
+    cursor: pointer;
+    color: var(--b);
+    background-color: var(--c);
+    padding: 0 1em;
+  }
+  span:nth-child(2) {
+    flex-grow: 1;
+  }
+}
