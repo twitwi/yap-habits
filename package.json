@@ -20,11 +20,14 @@
     "vue-router": "^4.5.0",
     "y-indexeddb": "^9.0.12",
     "y-websocket": "^3.0.0",
-    "yjs": "^13.6.24"
+    "yjs": "^13.6.24",
+    "zod": "^3.24.2"
   },
   "devDependencies": {
     "@tsconfig/node22": "^22.0.1",
     "@types/node": "^22.14.0",
+    "@vicons/fa": "^0.13.0",
+    "@vicons/utils": "^0.1.4",
     "@vitejs/plugin-vue": "^5.2.3",
     "@vitejs/plugin-vue-jsx": "^4.1.2",
     "@vue/eslint-config-prettier": "^10.2.0",
