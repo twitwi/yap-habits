@@ -114,7 +114,7 @@ function setTestConfig() {
     <div @click="navigateToday()">
       <Icon><CalendarDay /></Icon>
     </div>
-    <div @click="setTestConfig()">CFG</div>
+    <div @click="setTestConfig()" style="font-size: 0.5em;">CFG</div>
     <!--
       <nav>
         <RouterLink to="/">Home</RouterLink>

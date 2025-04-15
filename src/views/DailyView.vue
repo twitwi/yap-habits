@@ -135,6 +135,4 @@ function clickTemplate(t: LogTemplate) {
       <span>{{ shortClean(template.name) }}</span>
     </div>
   </div>
-  <pre>{{ JSON.stringify(main.data, null, 2) }}</pre>
-  <pre>{{ JSON.stringify(logs, null, 2) }}</pre>
 </template>
