@@ -9,10 +9,10 @@ const local = useLocalStore()
 const main = useMainStore()
 
 const defaultTemplates = () => `
-HighHanche×10 HancheMob×3
 Vipa+Butterfly×10 Vipa+WideButterfly×10
-DosCassé×10 Chevilles×10 EssuiGlace×10
-TrapèzeBalancier×10
+DosCassé×10 EssuiGlace×10
+Chevilles×10 TrapèzeBalancier×10
+HighHanche×10 HancheMob×3
 QuadMur×10
 Squat×10
 SquatLoaded×10
@@ -27,6 +27,7 @@ EquilibrePlaidLoaded(s)×30
 Biceps3kg×20
 BicepsRunner3kg×20
 Triceps3kg×20
+Nageur3kg×20
 RotateTorso3kg×20
 RenfoFromHell×1
 Sandi×30

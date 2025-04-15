@@ -62,7 +62,7 @@ h1 {
 }
 
 .list-of-done {
-  min-height: 9em;
+  min-height: 14em;
   padding-bottom: 2em;
 
   &>div {
