@@ -15,6 +15,9 @@ export default defineConfig({
     VitePWA({
       registerType: 'prompt',
       injectRegister: 'auto',
+      workbox: {
+        cleanupOutdatedCaches: true,
+      },
       pwaAssets: {
         disabled: false,
         config: true,

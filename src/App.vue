@@ -4,6 +4,7 @@ import { CalendarDay, UserCog } from '@vicons/fa'
 import { Icon } from '@vicons/utils'
 import { useLocalStore, useMainStore } from './stores/simple'
 import router from './router'
+import ReloadPrompt from './components/ReloadPrompt.vue'
 
 const local = useLocalStore()
 const main = useMainStore()
@@ -123,4 +124,5 @@ function setTestConfig() {
   </header>
 
   <RouterView />
+  <ReloadPrompt />
 </template>
