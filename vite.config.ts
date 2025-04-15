@@ -4,6 +4,7 @@ import { defineConfig } from 'vite'
 import vue from '@vitejs/plugin-vue'
 import vueJsx from '@vitejs/plugin-vue-jsx'
 import vueDevTools from 'vite-plugin-vue-devtools'
+import { VitePWA } from 'vite-plugin-pwa'
 
 // https://vite.dev/config/
 export default defineConfig({
@@ -11,6 +12,20 @@ export default defineConfig({
     vue(),
     vueJsx(),
     vueDevTools(),
+    VitePWA({
+      registerType: 'prompt',
+      injectRegister: 'auto',
+      pwaAssets: {
+        disabled: false,
+        config: true,
+      },
+      manifest: {
+        name: 'Renfollow',
+        short_name: 'renfollow',
+        description: 'Follow you renfo',
+        theme_color: '#0000ff',
+      },
+    }),
   ],
   resolve: {
     alias: {
