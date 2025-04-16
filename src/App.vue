@@ -57,7 +57,11 @@ function navigateToday() {
 }
 function setTestConfig() {
   main.config = {
-    templates: defaultTemplates(),
+    templates: [...defaultTemplates(), {
+      name: '@comment',
+      activity: '@comment',
+      quantity: 1,
+    }],
     shortNames: {
       superman: '🦸',
     },

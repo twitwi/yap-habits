@@ -6,9 +6,17 @@ const router = createRouter({
   history: createWebHashHistory(import.meta.env.BASE_URL),
   routes: [
     {
+      path: '/about',
+      name: 'about',
+      component: HomeView,
+    },
+    {
       path: '/',
       name: 'home',
-      component: HomeView,
+      component: DailyView,
+      props: {
+        day: new Date().toISOString().split('T')[0],
+      },
     },
     {
       path: '/day',

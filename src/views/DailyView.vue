@@ -46,7 +46,7 @@ function deltaDate(delta: number) {
 function shortClean(name: string) {
   let res = name
   if (main.config.shortNames !== undefined) {
-     res = main.config.shortNames[name] || name
+    res = main.config.shortNames[name] || name
   }
   res = res.replace(/([^ ×])([A-Z×(])/g, '$1 $2')
   return res
@@ -65,7 +65,27 @@ function templateStyle(t: Log | LogTemplate) {
   }
 }
 
+function spliceLog(l: Log) {
+  const dayLogs = main.data.logs?.[local.userName]?.[props.day]
+  if (dayLogs) {
+    const index = dayLogs.indexOf(l)
+    if (index !== -1) {
+      dayLogs.splice(index, 1)
+    }
+  }
+}
+
 function clickLog(l: Log) {
+  if (l.activity === '@comment') {
+    const newName = prompt('Enter new comment:', l.comment ?? '')
+    if (newName !== null) {
+      l.comment = newName
+    }
+    if (newName === '') {
+      spliceLog(l)
+    }
+    return
+  }
   // prompt for new quantity, if empty prompt for deletion
   const newQuantity = prompt('Enter new quantity:', l.quantity.toString())
   if (newQuantity === null) {
@@ -75,13 +95,7 @@ function clickLog(l: Log) {
     // prompt for deletion
     const deleteLog = confirm('Delete this log?')
     if (deleteLog) {
-      const dayLogs = main.data.logs?.[local.userName]?.[props.day]
-      if (dayLogs) {
-        const index = dayLogs.indexOf(l)
-        if (index !== -1) {
-          dayLogs.splice(index, 1)
-        }
-      }
+      spliceLog(l)
     }
     return
   }
@@ -114,17 +128,12 @@ function clickTemplate(t: LogTemplate) {
     ><span @click="deltaDate(1)">{{ '>' }}</span>
   </h1>
   <div class="list-of-done">
-    <div
-      v-for="(log, index) in logs"
-      :key="index"
-      :style="templateStyle(log)"
-      @click="clickLog(log)"
-    >
+    <div v-for="(log, index) in logs" :key="index" :style="templateStyle(log)" @click="clickLog(log)">
       <span>{{ shortClean(log.activity) }}</span>
       <span class="quantity">{{ log.quantity }}</span>
     </div>
   </div>
-  <hr/>
+  <hr />
   <div class="list-of-templates">
     <div
       v-for="(template, index) in main.config.templates"

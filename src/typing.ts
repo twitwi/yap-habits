@@ -16,6 +16,7 @@ export const zLog = z.object({
   at: zTime,
   activity: zActivity,
   quantity: z.number(),
+  comment: z.string().optional(),
 })
 export type Log = z.infer<typeof zLog>
 
