@@ -1,15 +1,10 @@
 import { createRouter, createWebHashHistory } from 'vue-router'
-import HomeView from '@/views/HomeView.vue'
 import DailyView from '@/views/DailyView.vue'
+import ConfigView from '@/views/ConfigView.vue'
 
 const router = createRouter({
   history: createWebHashHistory(import.meta.env.BASE_URL),
   routes: [
-    {
-      path: '/about',
-      name: 'about',
-      component: HomeView,
-    },
     {
       path: '/',
       name: 'home',
@@ -30,6 +25,12 @@ const router = createRouter({
       path: '/day/:day',
       name: 'day',
       component: DailyView,
+      props: true,
+    },
+    {
+      path: '/cfg',
+      name: 'config',
+      component: ConfigView,
       props: true,
     },
   ],
