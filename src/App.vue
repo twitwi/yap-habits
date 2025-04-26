@@ -2,7 +2,7 @@
 import { RouterView } from 'vue-router'
 import { CalendarDay, Cogs, UserCog } from '@vicons/fa'
 import { Icon } from '@vicons/utils'
-import { useLocalStore, useMainStore } from './stores/simple'
+import { useLocalStore } from './stores/simple'
 import router from './router'
 import ReloadPrompt from './components/ReloadPrompt.vue'
 

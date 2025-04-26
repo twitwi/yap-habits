@@ -18,6 +18,8 @@
     "pinia": "^3.0.1",
     "pinia-plugin-persistedstate": "^4.2.0",
     "pinia-plugin-yjs": "^0.0.4",
+    "sortablejs": "^1.15.6",
+    "sortablejs-vue3": "^1.2.11",
     "vite-plugin-pwa": "^1.0.0",
     "vue": "^3.5.13",
     "vue-router": "^4.5.0",

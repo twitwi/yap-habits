@@ -1,12 +1,19 @@
 <script setup lang="ts">
-import { useLocalStore, useMainStore } from '@/stores/simple'
+import { useMainStore } from '@/stores/simple'
 import { ref } from 'vue'
-const local = useLocalStore()
 const main = useMainStore()
+
+import { Sortable } from 'sortablejs-vue3'
+const onEnd = ({ newIndex, oldIndex }: Record<string, number>) => {
+  const templates = main.config.templates
+  const item = templates.splice(oldIndex, 1)[0]
+  templates.splice(newIndex, 0, item)
+}
 
 const showRaw = ref(false)
 
-const defaultTemplates = () => `
+const defaultTemplates = () =>
+  `
 Vipa+Butterfly×10 Vipa+WideButterfly×10
 DosCassé×10 EssuiGlace×10
 Chevilles×10 TrapèzeBalancier×10
@@ -32,22 +39,28 @@ Sandi×30
 Superman×20
 Genoux×15
 PiedsNus(tours)×4
-`.split(/[ \n]/g).filter(t => t.trim().length > 0).map((t) => {
-  const [activity, quantity] = t.split('×')
-  return {
-    name: `${activity}×${quantity}`,
-    activity,
-    quantity: parseInt(quantity),
-  }
-})
+`
+    .split(/[ \n]/g)
+    .filter((t) => t.trim().length > 0)
+    .map((t) => {
+      const [activity, quantity] = t.split('×')
+      return {
+        name: `${activity}×${quantity}`,
+        activity,
+        quantity: parseInt(quantity),
+      }
+    })
 
 function setTestConfig() {
   main.config = {
-    templates: [...defaultTemplates(), {
-      name: '@comment',
-      activity: '@comment',
-      quantity: 1,
-    }],
+    templates: [
+      ...defaultTemplates(),
+      {
+        name: '@comment',
+        activity: '@comment',
+        quantity: 1,
+      },
+    ],
     shortNames: {
       superman: '🦸',
     },
@@ -95,15 +108,43 @@ function setTestConfig() {
     main.data.logs = {}
   }
 }
+
+function promptEdit(e: Record<string, string>, field: string, forbiddenNames: string[] = []) {
+  const value = prompt(`Enter new ${field}:`, e[field])
+  if (value && value !== e[field]) {
+    if (forbiddenNames.includes(value)) {
+      alert(`Name "${value}" is already used`)
+      return
+    }
+    e[field] = value
+  }
+}
 </script>
 
 <template>
   <h3>Templates</h3>
+  <button @click="main.config.templates.unshift({ name: 'TODO_'+(''+Math.random()).substring(2), activity: '', quantity: 1 })">Add</button>
+  <Sortable :list="main.config.templates" item-key="name" :options="{ handle: '.handle', animation: 150 }" @end="onEnd">
+    <template #item="{ element: e }">
+      <div :key="e.name">
+        <span class="handle" :style="{
+          display: 'inline-block',
+          'margin-left': '5px',
+          'border-left': '5px solid ' + (main.config.colors[e.activity] || '#000'),
+         }">  ⮃  </span>
+        <input v-model="e.activity" />
+        <input v-model="e.quantity" type="number" />
+        <span @click="promptEdit(e, 'name', main.config.templates.map(c => c.name))" style="padding: 0 1em;">{{ e.name }}</span>
+        <button @click="main.config.templates.splice(main.config.templates.indexOf(e), 1)">X</button>
+      </div>
+    </template>
+  </Sortable>
+
   <h3>Bootstrap</h3>
   <button @click="setTestConfig()">Set default test config</button>
 
   <label>
-    <h3><input type="checkbox" v-model="showRaw"/> Show raw config</h3>
+    <h3><input type="checkbox" v-model="showRaw" /> Show raw config</h3>
     <pre v-if="showRaw">{{ JSON.stringify(main.config, null, 2) }}</pre>
   </label>
 </template>
