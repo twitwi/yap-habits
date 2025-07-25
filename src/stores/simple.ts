@@ -7,7 +7,7 @@ export const useLocalStore = defineStore('local', () => {
   const userName = ref('bob')
   return { userName }
 }, {
-  persist: true, // persisted in localStorage
+  persist: { key: 'yap-habits:local' }, // persisted in localStorage
 })
 
 export const useMainStore = defineStore(

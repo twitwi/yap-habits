@@ -23,9 +23,9 @@ export default defineConfig({
         config: true,
       },
       manifest: {
-        name: 'Renfollow',
-        short_name: 'renfollow',
-        description: 'Follow you renfo',
+        name: 'yap-Habits',
+        short_name: 'yap-habits',
+        description: 'yap-Habits is a micro-habit tracker which is yjs-backed, collaborative, offline-first.',
         theme_color: '#0000ff',
       },
     }),
