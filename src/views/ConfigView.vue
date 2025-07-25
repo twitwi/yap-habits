@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import EditLocalStorageConfig from '@/components/EditLocalStorageConfig.vue'
 import { useMainStore } from '@/stores/simple'
 import { ref } from 'vue'
 const main = useMainStore()
@@ -142,6 +143,9 @@ function promptEdit(e: Record<string, string>, field: string, forbiddenNames: st
 
   <h3>Bootstrap</h3>
   <button @click="setTestConfig()">Set default test config</button>
+
+  <h3>Server</h3>
+  <EditLocalStorageConfig mode="details" />
 
   <label>
     <h3><input type="checkbox" v-model="showRaw" /> Show raw config</h3>
