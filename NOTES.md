@@ -1,13 +1,13 @@
 
 ~~~
-#pnpm  build-only --base /2025-04-renfollow/
-pnpm  build --base /2025-04-renfollow/
-@send-to-dl-dir dist 2025-04-renfollow
+#pnpm  build-only --base /habits/
+pnpm  build --base /habits/
+@send-to-dl-dir dist apps/habits
 ~~~
 
 TODO
 
-- [ ] finish working on list edition etc and consolidate if it works
+- maybe have a unit, mainly for display
 - make "done" stuff autoadapt so that no jump, first a few big ones, then smallen automatically to fit
 - consider allowing grouping them when smallened (e.g. []^3)
 - edit colors (directly clicking on the color)
