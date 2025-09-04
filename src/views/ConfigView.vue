@@ -5,10 +5,13 @@ import { ref } from 'vue'
 const main = useMainStore()
 
 import { Sortable } from 'sortablejs-vue3'
+import { yjs } from '@/main'
 const onEnd = ({ newIndex, oldIndex }: Record<string, number>) => {
-  const templates = main.config.templates
-  const item = templates.splice(oldIndex, 1)[0]
-  templates.splice(newIndex, 0, item)
+  yjs.ydoc.transact(() => {
+    const templates = main.config.templates
+    const item = JSON.parse(JSON.stringify(templates.splice(oldIndex, 1)[0]))
+    templates.splice(newIndex, 0, item)
+  })
 }
 
 const showRaw = ref(false)
