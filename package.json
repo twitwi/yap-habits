@@ -17,7 +17,7 @@
     "@vueuse/core": "^12.3.0",
     "pinia": "^3.0.1",
     "pinia-plugin-persistedstate": "^4.2.0",
-    "pinia-plugin-yjs": "^0.0.4",
+    "pinia-plugin-yjs": "github:twitwi/pinia-plugin-yjs",
     "sortablejs": "^1.15.6",
     "sortablejs-vue3": "^1.2.11",
     "vite-plugin-pwa": "^1.0.0",

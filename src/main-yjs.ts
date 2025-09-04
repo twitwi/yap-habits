@@ -17,11 +17,11 @@ export function getOrAskConfig(LOCAL_STORAGE_KEY = APP_LOCAL_STORAGE_KEY, saveTo
   //let default = ['TODO.com', 'todo-doc', 'todo-tok-suffix'] // TODO: server, document name, token (if any)
 
   if (LOCAL_STORAGE_KEY ?? '' !== '') {
-    if (LOCAL_STORAGE_KEY == 'yjsapp-config') {
+    if (LOCAL_STORAGE_KEY == 'yjsapp:server') {
       alert(
         'WARNING: Using default config\n\nPlease configure your app with a unique local storage key.\n\n(if not, two apps might reuse the same credentials to the same document (but treat this as different type!).',
       )
-      alert("We recommend to use a unique key, e.g. 'yjsapp-<your-app-name>', but will let you continue now.")
+      alert("We recommend to use a unique key, e.g. 'yjsapp-<your-app-name>:server', but will let you continue now.")
     }
     const local = localStorage.getItem(LOCAL_STORAGE_KEY)
     if (local) {
@@ -69,18 +69,23 @@ export function getOrAskConfig(LOCAL_STORAGE_KEY = APP_LOCAL_STORAGE_KEY, saveTo
   return config as [string, string, string]
 }
 
-export function setupYjs(piniaUse: Pinia, { websocket = true, indexeddb = true, pinia = true } = {}) {
+export async function setupYjs(piniaUse: Pinia, { websocket = true, indexeddb = true, pinia = true } = {}) {
   const ydoc = new Y.Doc()
   const [server, docname, token] = getOrAskConfig()
   const idbkey = `yjs-${docname}` // idb key, can be different
+  let ws = undefined
   if (websocket) {
-    new WebsocketProvider(server.includes('://') ? server : `wss://${server}`, `${docname}?t=${token}`, ydoc)
+    ws = new WebsocketProvider(server.includes('://') ? server : `wss://${server}`, `${docname}?t=${token}`, ydoc)
   }
+  let idb = undefined as undefined | IndexeddbPersistence
   if (indexeddb) {
-    new IndexeddbPersistence(idbkey, ydoc)
+    idb = new IndexeddbPersistence(idbkey, ydoc)
+    await new Promise((resolve) => {
+      idb!.on('synced', resolve)
+    })
   }
   if (pinia) {
     piniaUse.use(createPiniaYJSPlugin({ doc: ydoc }))
   }
-  return ydoc
+  return { ydoc, server, docname, token, idbkey, ws, idb }
 }

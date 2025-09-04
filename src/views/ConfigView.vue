@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import EditLocalStorageConfig from '@/components/EditLocalStorageConfig.vue'
-import { useMainStore } from '@/stores/simple'
+import { useMainStore } from '@/stores/persist'
 import { ref } from 'vue'
 const main = useMainStore()
 

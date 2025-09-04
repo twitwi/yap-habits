@@ -4,7 +4,7 @@ const props = defineProps<{
 }>()
 
 import router from '@/router'
-import { useLocalStore, useMainStore } from '@/stores/simple'
+import { useLocalStore, useMainStore } from '@/stores/persist'
 import type { Log, LogTemplate } from '@/typing'
 import { computed } from 'vue'
 const local = useLocalStore()
