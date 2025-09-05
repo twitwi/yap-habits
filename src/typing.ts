@@ -41,3 +41,8 @@ export const zConfig = z.object({
   colors: z.record(zActivity, z.string()),
 })
 export type Config = z.infer<typeof zConfig>
+
+export type Full = {
+  config: Config
+  data: Data
+}

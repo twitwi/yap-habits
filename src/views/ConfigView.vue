@@ -1,155 +1,11 @@
 <script setup lang="ts">
 import EditLocalStorageConfig from '@/components/EditLocalStorageConfig.vue'
 import { useMainStore } from '@/stores/persist'
-import { ref, type ComputedRef } from 'vue'
-const main = useMainStore()
-import { customRef } from 'vue'
-
-const ydoc = yjs.ydoc // TODO pass to functions...
-import { Doc as YDoc, Map as YMap, Array as YArray, Text as YText } from 'yjs'
-function proxyYArray(o: YArray<YAny>) {
-  o.observe((event) => {
-    console.log('%%%%%%%%%% YArray observe', event)
-  })
-  return new Proxy(o, {
-    get(target, prop) {
-      if (prop === Symbol.iterator) {
-        return function* () {
-          for (let i = 0; i < target.length; i++) {
-            const v = target.get(i)
-            console.log("array iter", i, v)
-            yield proxyY(v)
-          }
-        }
-      }
-      if (prop === 'length') {
-        return target.length
-      }
-      if (prop === 'splice') {
-        return (start: number, deleteCount?: number, ...items: YAny[]) => {
-          console.log('array splice', start, deleteCount, items)
-          //return target.splice(start, deleteCount, ...items)
-          const res = []
-          for (let i = start; i < (deleteCount ? start + deleteCount : target.length); i++) {
-            const v = target.get(i)
-            res.push(v !== undefined ? v.toJSON() : v)
-          }
-          ydoc.transact(() => {
-            target.delete(start, deleteCount || 0)
-            if (items.length > 0) {
-              target.insert(start, items.map(toY))
-            }
-          })
-          return res
-        }
-      }
-      if (typeof prop === 'string' && !isNaN(Number(prop))) {
-        const v = target.get(Number(prop))
-        console.log("array get", prop, v)
-        return proxyY(v)
-      }
-      //throw new Error('Cannot get property ' + String(prop) + ' on YArray')
-      return Reflect.get(target, prop)
-    },
-    set(target, prop, value) {
-      if (typeof prop === 'string' && !isNaN(Number(prop))) {
-        target.set(Number(prop), toY(value))
-        return true
-      }
-      throw new Error('Cannot set property ' + String(prop) + ' on YArray')
-      //return Reflect.set(target, prop, value)
-    },
-  })
-}
-function proxyYMap(o: YMap<YAny>) {
-  o.observe((event) => {
-    console.log('%%%%%%%%%% YMap observe', event)
-  })
-  return new Proxy(o, {
-    get(target, prop) {
-      if (typeof prop === 'string' && target.has(prop)) {
-        const v = target.get(prop)
-        return proxyY(v)
-      }
-      return Reflect.get(target, prop)
-    },
-    set(target, prop, value) {
-      if (typeof prop === 'string') {
-        target.set(prop, toY(value))
-        return true
-      }
-      throw new Error('Cannot set property ' + String(prop) + ' on YMap')
-      //return Reflect.set(target, prop, value)
-    },
-  })
-}
-
-function toY(o: any): YAny {
-  if (o === undefined || typeof o === 'number') {
-    return o
-  }
-  if (Array.isArray(o)) {
-    const ya = new YArray<YAny>()
-    ya.insert(0, o.map(toY))
-    return ya
-  }
-  if (typeof o === 'object') {
-    const ym = new YMap<YAny>()
-    for (const k of Object.keys(o)) {
-      ym.set(k, toY(o[k]))
-    }
-    return ym
-  }
-  if (typeof o === 'string') {
-    return new YText(o)
-  }
-  throw new Error('Unsupported type for toY: ' + typeof o)
-}
-
-type YAny = YMap<YAny> | YArray<YAny> | YText
-function proxyY(o: YAny | undefined) {
-  if (o === undefined || typeof o === 'number') {
-    return o
-  }
-  console.log('proxyY OBJECT', o)
-  const type = o.__proto__.constructor.name.replace(/_/g, '')
-  console.log('proxyY TYPE', type)
-  if (type === 'YMap') {
-    return proxyYMap(o as YMap<YAny>)
-  } else if (type === 'YArray') {
-    return proxyYArray(o as YArray<YAny>)
-  } else if (type === 'YText') {
-    return (o as YText).toString()
-  }
-  throw new Error('Unsupported Y type: ' + type)
-}
-
-function yjsRef<T>(doc: YDoc, path: string) {
-  console.log('yjsRef (IGNORING)', path)
-  return customRef((track, trigger) => ({
-    get() {
-      console.log('================== yjsRef get')
-      track()
-      const obj = doc.getMap('YJS-main').get('config').get('templates') as YArray<YAny> | YMap<YAny>
-      if (!obj) {
-        return []
-      }
-      obj.observeDeep(useThrottleFn((events) => {
-        console.log('%%%%%%%%%% YJS observeDeep', events)
-        doc.transact(() => {
-          trigger()
-        })
-      }, 100))
-      return proxyY(obj)
-    },
-    set() {
-      throw new Error('Cannot set yjsRef directly')
-    },
-  })) as ComputedRef<T>
-}
+import { Sortable } from 'sortablejs-vue3'
+import { computed, ref } from 'vue'
 
 //const templates = proxyY(yjs.ydoc.getMap('YJS-main').get('config').get('templates'))
-const templates = yjsRef<LogTemplate[]>(yjs.ydoc, 'YJS-main.config.templates')
+//const templates = yjsRef<LogTemplate[]>(yjs.ydoc, 'YJS-main.config.templates')
 
 /*customRef((track, trigger) => ({
   get() {
@@ -169,16 +25,16 @@ const templates = yjsRef<LogTemplate[]>(yjs.ydoc, 'YJS-main.config.templates')
 
 //import yjson from  '../yjson/src'
 //const templates = yjson(yjs.ydoc, 'YJS-main').config
+const main = useMainStore()
+const templates = computed(() => main.value?.config?.templates ?? [])
 console.log(templates.value)
 
-import { Sortable } from 'sortablejs-vue3'
-import { yjs } from '@/main'
-import { useDebounceFn, useThrottleFn, type ReadonlyRefOrGetter } from '@vueuse/core'
-import type { LogTemplate } from '@/typing'
 const onEnd = ({ newIndex, oldIndex }: Record<string, number>) => {
-  const o = JSON.parse(JSON.stringify(templates.value[oldIndex]))
-  templates.value.splice(oldIndex, 1)
-  templates.value.splice(newIndex, 0, o)
+    const o = JSON.parse(JSON.stringify(templates.value[oldIndex]))
+    templates.value.splice(oldIndex, 1)
+    //nextTick(() => {
+      templates.value.splice(newIndex - (oldIndex < newIndex ? 0 : 0), 0, o)
+    //})
   //const newT = JSON.parse(JSON.stringify(main.config.templates))
   //const item = newT.splice(oldIndex, 1)[0]
   //newT.splice(newIndex, 0, item)
@@ -227,6 +83,71 @@ PiedsNus(tours)×4
     })
 
 function setTestConfig() {
+  const tv = templates.value
+  tv.splice(0, tv.length,
+    ...JSON.parse(JSON.stringify(defaultTemplates())),
+    {
+      name: '@comment',
+      activity: '@comment',
+      quantity: 1,
+    },
+  )
+  const m = main.value
+  m.config = m.config || {}
+  m.config.templates = m.config.templates || []
+  m.config.shortNames = {
+    superman: '🦸',
+  }
+  m.config.colors =  {
+      HighHanche: '#00ff00',
+      HancheMob: '#00ff00',
+      Bend: '#00ff00',
+      //
+      'Vipa+Butterfly': '#00ffff',
+      'Vipa+WideButterfly': '#00ffff',
+      DosCassé: '#00ffff',
+      Chevilles: '#00ffff',
+      EssuiGlace: '#00ffff',
+      //
+      TrapèzeBalancier: '#ff8800',
+      Equilibre: '#888800',
+      //
+      Biceps3kg: '#008888',
+      BicepsRunner3kg: '#008888',
+      Triceps3kg: '#008888',
+      Nageur3kg: '#008888',
+      RotateTorso3kg: '#008888',
+      //
+      EquilibreLoaded: '#ff88ff',
+      EquilibrePlaid: '#ff88ff',
+      EquilibrePlaidLoaded: '#ff88ff',
+      //
+      Calf: '#ff0088',
+      CalfBent: '#ff0088',
+      CalfLoaded: '#ff0088',
+      CalfBentLoaded: '#ff0088',
+      //
+      QuadMur: '#8800ff',
+      Squat: '#8800ff',
+      SquatLoaded: '#8800ff',
+      //
+      RenfoFromHell: '#8888ff',
+      Sandi: '#8888ff',
+      Superman: '#8888ff',
+      Genoux: '#8888ff',
+      'PiedsNus(tours)': '#8888ff',
+    }
+  /*
+  main.config.templates = [
+    ...defaultTemplates(),
+    {
+      name: '@comment',
+      activity: '@comment',
+      quantity: 1,
+    },
+  ]
+    */
+  /*
   main.config = {
     templates: [
       ...defaultTemplates(),
@@ -282,6 +203,7 @@ function setTestConfig() {
   if (main.data.logs === undefined) {
     main.data.logs = {}
   }
+    */
 }
 
 function promptEdit(e: Record<string, string>, field: string, forbiddenNames: string[] = []) {
@@ -294,12 +216,26 @@ function promptEdit(e: Record<string, string>, field: string, forbiddenNames: st
     e[field] = value
   }
 }
+
+
+const logEvent = (evt: Event, evt2?: Event) => {
+    if (evt2) {
+        console.log("EVENT", evt, evt2);
+    } else {
+        console.log("EVENT", evt);
+    }
+};
 </script>
 
 <template>
   <h3>Templates</h3>
   <button @click="templates.splice(0, 0, { name: 'TODO_'+(''+Math.random()).substring(2), activity: '', quantity: 1 })">Add</button>
-  <Sortable :list="templates" item-key="name" :options="{ handle: '.handle', animation: 150 }" @end="onEnd">
+  <Sortable :list="templates" item-key="name" :options="{ handle: '.handle', animation: 150 }"
+  @change="logEvent" @choose="logEvent"
+                @unchoose="logEvent" @start="logEvent" NOATend="logEvent" @add="logEvent"
+                @update="logEvent" @sort="logEvent" @remove="logEvent" @filter="logEvent"
+                @move="logEvent" @clone="logEvent"
+@end="onEnd">
     <template #item="{ element: e, index: ie }">
       <div :key="e.name">
         <span class="handle" :style="{
@@ -317,6 +253,8 @@ function promptEdit(e: Record<string, string>, field: string, forbiddenNames: st
 
   <h3>Bootstrap</h3>
   <button @click="setTestConfig()">Set default test config</button>
+  <button @click="onEnd({ oldIndex: 0, newIndex: 5 })">Turn-1</button>
+  <button @click="onEnd({ oldIndex: 5, newIndex: 0 })">Turn+1</button>
 
   <h3>Server</h3>
   <EditLocalStorageConfig mode="details" />
