@@ -45,6 +45,7 @@ const showRaw = ref(false)
 
 const defaultTemplates = () =>
   `
+glutes×10 glutesLoaded1kg×10
 Vipa+Butterfly×10 Vipa+WideButterfly×10
 DosCassé×10 EssuiGlace×10
 Chevilles×10 TrapèzeBalancier×10
