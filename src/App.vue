@@ -2,11 +2,18 @@
 import { RouterView } from 'vue-router'
 import { CalendarDay, Cogs, UserCog } from '@vicons/fa'
 import { Icon } from '@vicons/utils'
-import { useLocalStore } from './stores/persist'
+import { useLocalStore, useMainStore } from './stores/persist'
 import router from './router'
 import ReloadPrompt from './components/ReloadPrompt.vue'
+import { computed } from 'vue'
 
 const local = useLocalStore()
+const main = useMainStore()
+
+const isReady = computed(() => {
+  const v = main.value
+  return v !== undefined && v.config && v.data && v.data.logs
+})
 
 function changeUserName() {
   const name = prompt('Enter your name:', local.userName)
@@ -27,6 +34,7 @@ function navigateConfig() {
 </script>
 
 <template>
+  <div v-if="!isReady" class="loading">Loading...</div>
   <header>
     <div @click="changeUserName()">
       <Icon><UserCog /></Icon>

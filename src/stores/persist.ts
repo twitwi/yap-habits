@@ -1,4 +1,4 @@
-import { ref } from 'vue'
+import { ref, type Ref } from 'vue'
 import { defineStore } from 'pinia'
 import type { Full } from '@/typing'
 import { yjsRef, YDoc } from './useYjs'
@@ -12,7 +12,7 @@ export const useLocalStore = defineStore('local', () => {
   persist: { key: 'yap-habits:local' }, // persisted in localStorage
 })
 
-export function useMainStore(ydoc? : YDoc) {
+export function useMainStore(ydoc? : YDoc) : Ref<Full> {
   ydoc = ydoc ?? yjs.ydoc
   return yjsRef<Full>(ydoc, 'YJS-main')
 }

@@ -11,7 +11,7 @@ const local = useLocalStore()
 const main = useMainStore()
 
 const logs = computed(() => {
-  const l = main.data.logs
+  const l = main.value.data.logs
   if (l === undefined) {
     return [] as Log[]
   }
@@ -45,18 +45,20 @@ function deltaDate(delta: number) {
 
 function shortClean(name: string) {
   let res = name
-  if (main.config.shortNames !== undefined) {
-    res = main.config.shortNames[name] || name
+  const names = main.value.config.shortNames
+  if (names !== undefined) {
+    res = names[name] || name
   }
   res = res.replace(/([^ ×])([A-Z×(])/g, '$1 $2')
   return res
 }
 
 function templateStyle(t: Log | LogTemplate) {
-  if (main.config.colors === undefined) {
+  const mc = main.value.config
+  if (mc.colors === undefined) {
     return {}
   }
-  const color = main.config.colors[t.activity]
+  const color = mc.colors[t.activity]
   if (color === undefined) {
     return {}
   }
@@ -65,17 +67,22 @@ function templateStyle(t: Log | LogTemplate) {
   }
 }
 
-function spliceLog(l: Log) {
-  const dayLogs = main.data.logs?.[local.userName]?.[props.day]
+function spliceLog(l: Log, il: number) {
+  const md = main.value.data
+  const dayLogs = md.logs?.[local.userName]?.[props.day]
   if (dayLogs) {
-    const index = dayLogs.indexOf(l)
-    if (index !== -1) {
-      dayLogs.splice(index, 1)
+    if (l.at !== dayLogs[il]?.at) {
+      throw new Error('Log "at" does not match')
     }
+    dayLogs.splice(il, 1)
+    //const index = dayLogs.indexOf(l)
+    //if (index !== -1) {
+    //  dayLogs.splice(index, 1)
+    //}
   }
 }
 
-function clickLog(l: Log) {
+function clickLog(l: Log, il: number) {
   if (l.activity === '@comment') {
     const newName = prompt('Enter new comment:', l.comment ?? '')
     if (newName !== null) {
@@ -95,7 +102,7 @@ function clickLog(l: Log) {
     // prompt for deletion
     const deleteLog = confirm('Delete this log?')
     if (deleteLog) {
-      spliceLog(l)
+      spliceLog(l, il)
     }
     return
   }
@@ -111,12 +118,13 @@ function clickTemplate(t: LogTemplate) {
   const log: Log = {
     activity: t.activity,
     quantity: t.quantity,
-    at: new Date().getTime(),
+    at: Date.now(),
   }
-  const l = main.data.logs
-  l[local.userName] = l[local.userName] || {}
+  const l = main.value.data.logs
+  console.log('CLICK TEMPLATE', t, log, l, local.userName, props.day, l?.[local.userName])
+  l[local.userName] = l[local.userName] ?? {}
   const ul = l[local.userName]
-  ul[props.day] = ul[props.day] || []
+  ul[props.day] = ul[props.day] ?? []
   ul[props.day].push(log)
 }
 </script>
@@ -128,7 +136,7 @@ function clickTemplate(t: LogTemplate) {
     ><span @click="deltaDate(1)">{{ '>' }}</span>
   </h1>
   <div class="list-of-done">
-    <div v-for="(log, index) in logs" :key="index" :style="templateStyle(log)" @click="clickLog(log)">
+    <div v-for="(log, ilog) in logs" :key="ilog" :style="templateStyle(log)" @click="clickLog(log, ilog)">
       <span>{{ shortClean(log.activity) }}</span>
       <span class="quantity">{{ log.quantity }}</span>
     </div>
