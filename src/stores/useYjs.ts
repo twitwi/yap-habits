@@ -10,7 +10,7 @@ export type YAny = YMap<YAny> | YArray<YAny> | YText | number
 export type SAny = number | string | SAny[] | { [key: string]: SAny }
 
 export function className(o: YAny | SAny | undefined): string {
-  return o?.__proto__?.constructor?.name ?? typeof o
+  return o ? Object.getPrototypeOf(o)?.constructor?.name ?? typeof o : typeof o
 }
 export function isY(o: YAny | SAny | undefined): o is YAny {
   return className(o).startsWith('_Y')

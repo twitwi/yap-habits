@@ -146,7 +146,7 @@ function promptEdit(e: Record<string, string>, field: string, forbiddenNames: st
          }">  ⮃  </span>
         <input v-model="e.activity" />
         <input v-model="e.quantity" type="number" />
-        <span @click="promptEdit(e, 'name', templates.map(c => c.name))" style="padding: 0 1em;">{{ e.name }}</span>
+        <span @click="promptEdit(e as Record<'name', string>, 'name', templates.map(c => c.name))" style="padding: 0 1em;">{{ e.name }}</span>
         <button @click="templates.splice(ie, 1)">X</button>
       </div>
     </template>

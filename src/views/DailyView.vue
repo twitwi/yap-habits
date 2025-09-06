@@ -75,10 +75,6 @@ function spliceLog(l: Log, il: number) {
       throw new Error('Log "at" does not match')
     }
     dayLogs.splice(il, 1)
-    //const index = dayLogs.indexOf(l)
-    //if (index !== -1) {
-    //  dayLogs.splice(index, 1)
-    //}
   }
 }
 
@@ -89,7 +85,7 @@ function clickLog(l: Log, il: number) {
       l.comment = newName
     }
     if (newName === '') {
-      spliceLog(l)
+      spliceLog(l, il)
     }
     return
   }
