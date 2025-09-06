@@ -82,6 +82,9 @@ export function proxyYArray(o: YArray<YAny>, ydoc: YDoc): SAny[] {
     },
     set(target, prop, value) {
       if (typeof prop === 'string' && !isNaN(Number(prop))) {
+        if (isY(value)) {
+          value = fromY(value)
+        }
         ydoc.transact(() => {
           const index = Number(prop)
           if (index < target.length) {
