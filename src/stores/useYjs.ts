@@ -9,20 +9,26 @@ import { useDebounceFn } from '@vueuse/core'
 export type YAny = YMap<YAny> | YArray<YAny> | YText | number
 export type SAny = number | string | SAny[] | { [key: string]: SAny }
 
+
 export function className(o: YAny | SAny | undefined): string {
   return o ? Object.getPrototypeOf(o)?.constructor?.name ?? typeof o : typeof o
 }
+export const classNames = {
+  YMap: className(new YMap()),
+  YArray: className(new YArray()),
+  YText: className(new YText('')),
+}
 export function isY(o: YAny | SAny | undefined): o is YAny {
-  return className(o).match(/^_?Y[A-Z]/) !== null
+  return Object.values(classNames).includes(className(o)) //className(o).match(/^_?Y[A-Z]/) !== null
 }
 export function isYArray(o: YAny): o is YArray<YAny> {
-  return className(o).match(/^_?YArray$/) !== null
+  return className(o) === classNames.YArray // className(o).match(/^_?YArray$/) !== null
 }
 export function isYMap(o: YAny): o is YMap<YAny> {
-  return className(o).match(/^_?YMap$/) !== null
+  return className(o) === classNames.YMap // className(o).match(/^_?YMap$/) !== null
 }
 export function isYText(o: YAny): o is YText {
-  return className(o).match(/^_?YText$/) !== null
+  return className(o) === classNames.YText // className(o).match(/^_?YText$/) !== null
 }
 
 const unimplemented = new Set<string|symbol>('concat reverse'.split(' '))
