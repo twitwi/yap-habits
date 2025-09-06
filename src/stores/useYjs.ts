@@ -13,16 +13,16 @@ export function className(o: YAny | SAny | undefined): string {
   return o ? Object.getPrototypeOf(o)?.constructor?.name ?? typeof o : typeof o
 }
 export function isY(o: YAny | SAny | undefined): o is YAny {
-  return className(o).startsWith('_Y')
+  return className(o).match(/^_?Y[A-Z]/) !== null
 }
 export function isYArray(o: YAny): o is YArray<YAny> {
-  return className(o) === '_YArray'
+  return className(o).match(/^_?YArray$/) !== null
 }
 export function isYMap(o: YAny): o is YMap<YAny> {
-  return className(o) === '_YMap'
+  return className(o).match(/^_?YMap$/) !== null
 }
 export function isYText(o: YAny): o is YText {
-  return className(o) === '_YText'
+  return className(o).match(/^_?YText$/) !== null
 }
 
 const unimplemented = new Set<string|symbol>('concat reverse'.split(' '))
@@ -114,7 +114,7 @@ export function proxyYMap(o: YMap<YAny>, ydoc: YDoc) {
       return Reflect.get(target, prop)
     },
     set(target, prop, value) {
-      if (value?.__proto__?.constructor?.name?.startsWith('_Y')) {
+      if (isY(value)) {
         value = fromY(value)
       }
       if (typeof prop === 'string') {
@@ -146,7 +146,7 @@ export function toY(o: SAny): YAny {
   if (typeof o === 'object') {
     const ym = new YMap<YAny>()
     for (const k of Object.getOwnPropertyNames(o)) {
-      if (k === 'client') {
+      if (k === 'client') { // DETECT ERRORS... remove when stable (because here we prevent using client as a genuine key)
         throw new Error('toY: skipping client key')
       }
       ym.set(k, toY(o[k]))
