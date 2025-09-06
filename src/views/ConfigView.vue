@@ -132,6 +132,36 @@ function promptEdit(e: Record<string, string>, field: string, forbiddenNames: st
   }
 }
 
+function patchAllGlutes() {
+  const md = main.value.data
+  if (md.logs === undefined) {
+    return
+  }
+  const logs = md.logs
+  console.log('Patching all Glutes logs...', logs)
+  for (const user of Object.keys(logs)) {
+    console.log('Patching user', user)
+    const userLogs = logs[user]
+    if (userLogs === undefined) {
+      continue
+    }
+    console.log('User logs', userLogs)
+    for (const day in userLogs) {
+      const dayLogs = userLogs[day]
+      console.log(day, dayLogs)
+      if (dayLogs === undefined) {
+        continue
+      }
+      for (const log of dayLogs) {
+        if (log.activity === 'glutes') {
+          console.log('Patching log', log)
+          log.activity = 'Glutes'
+        }
+      }
+    }
+  }
+}
+
 </script>
 
 <template>
@@ -161,6 +191,7 @@ function promptEdit(e: Record<string, string>, field: string, forbiddenNames: st
   <button @click="setTestConfig()">Set default test config</button>
   <button @click="onEnd({ oldIndex: 0, newIndex: 5 })">Turn-1</button>
   <button @click="onEnd({ oldIndex: 5, newIndex: 0 })">Turn+1</button>
+  <button @click="patchAllGlutes()">Patch all Glutes</button>
 
   <h3>Server</h3>
   <EditLocalStorageConfig mode="details" />
