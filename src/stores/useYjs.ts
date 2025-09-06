@@ -106,7 +106,26 @@ export function proxyYArray(o: YArray<YAny>, ydoc: YDoc): SAny[] {
 export function proxyYMap(o: YMap<YAny>, ydoc: YDoc) {
   ////o.observe((event) => {
   return new Proxy(o, {
+    ownKeys(target) {
+      return Array.from(target.keys())
+    },
+    getOwnPropertyDescriptor(target, p) {
+      if (typeof p === 'string' && target.has(p)) {
+        return {
+          configurable: true,
+          enumerable: true,
+          value: proxyY(target.get(p), ydoc),
+          writable: true,
+        }
+      }
+      return undefined
+    },
     get(target, prop) {
+      if (prop === Symbol.iterator) {
+        // objects are not iterable
+        console.warn('YMap proxy is considered an object, not iterable, use Object.entries()')
+        return undefined
+      }
       if (typeof prop === 'string' && target.has(prop)) {
         const v = target.get(prop)
         return proxyY(v, ydoc)
