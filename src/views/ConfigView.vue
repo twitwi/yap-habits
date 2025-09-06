@@ -1,9 +1,10 @@
 <script setup lang="ts">
 import EditLocalStorageConfig from '@/components/EditLocalStorageConfig.vue'
-import { useMainStore } from '@/stores/persist'
+import { useLocalStore, useMainStore } from '@/stores/persist'
 import { Sortable } from 'sortablejs-vue3'
 import { computed, ref } from 'vue'
 
+const local = useLocalStore()
 const main = useMainStore()
 const templates = computed(() => main.value?.config?.templates ?? [])
 //console.log(templates.value)
@@ -152,7 +153,11 @@ function promptEdit(e: Record<string, string>, field: string, forbiddenNames: st
     </template>
   </Sortable>
 
-  <h3>Bootstrap</h3>
+  <h3>Modes</h3>
+  <button @click="local.mode = ''">Default</button>
+  <button @click="local.mode = 'edit'">Edit</button>
+
+  <h3>Bootstrap / tests / patches</h3>
   <button @click="setTestConfig()">Set default test config</button>
   <button @click="onEnd({ oldIndex: 0, newIndex: 5 })">Turn-1</button>
   <button @click="onEnd({ oldIndex: 5, newIndex: 0 })">Turn+1</button>

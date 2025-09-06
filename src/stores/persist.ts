@@ -5,9 +5,10 @@ import { yjsRef, YDoc } from './useYjs'
 import { yjs } from '@/main'
 
 export const useLocalStore = defineStore('local', () => {
-  // like setup() in a component
-  const userName = ref('bob')
-  return { userName }
+  return {
+    userName: ref('bob'),
+    mode: ref('' as '' | 'edit'),
+  }
 }, {
   persist: { key: 'yap-habits:local' }, // persisted in localStorage
 })

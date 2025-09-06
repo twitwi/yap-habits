@@ -123,6 +123,13 @@ function clickTemplate(t: LogTemplate) {
   ul[props.day] = ul[props.day] ?? []
   ul[props.day].push(log)
 }
+
+function promptChangeType(t: Log | LogTemplate) {
+  const newType = prompt('Enter new activity type:', t.activity)
+  if (newType !== null && newType.trim() !== '') {
+    t.activity = newType.trim()
+  }
+}
 </script>
 
 <template>
@@ -133,7 +140,8 @@ function clickTemplate(t: LogTemplate) {
   </h1>
   <div class="list-of-done">
     <div v-for="(log, ilog) in logs" :key="ilog" :style="templateStyle(log)" @click="clickLog(log, ilog)">
-      <span>{{ shortClean(log.activity) }}</span>
+      <span v-if="local.mode === 'edit'" class="edit" @click="promptChangeType(log)">!!{{ shortClean(log.activity) }}!!</span>
+      <span v-else>{{ shortClean(log.activity) }}</span>
       <span class="quantity">{{ log.quantity }}</span>
     </div>
   </div>
