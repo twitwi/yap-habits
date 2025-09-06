@@ -12,7 +12,7 @@ const app = createApp(App)
 const pinia = createPinia()
 
 pinia.use(piniaPluginPersistedstate)
-export const yjs = await setupYjs(pinia)
+export const yjs = await setupYjs()
 
 app.use(pinia)
 app.use(router)

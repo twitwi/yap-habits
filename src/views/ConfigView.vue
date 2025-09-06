@@ -4,52 +4,25 @@ import { useMainStore } from '@/stores/persist'
 import { Sortable } from 'sortablejs-vue3'
 import { computed, ref } from 'vue'
 
-//const templates = proxyY(yjs.ydoc.getMap('YJS-main').get('config').get('templates'))
-//const templates = yjsRef<LogTemplate[]>(yjs.ydoc, 'YJS-main.config.templates')
-
-/*customRef((track, trigger) => ({
-  get() {
-    track()
-    const arr =  as YArray<YAny>
-    arr.observeDeep((events) => {
-      console.log('%%%%%%%%%% YArray observeDeep', events)
-      trigger()
-    })
-    return proxyYArray(arr)
-  },
-  set(v) {
-    throw new Error('Cannot set templates directly')
-  },
-}))*/
-
-
-//import yjson from  '../yjson/src'
-//const templates = yjson(yjs.ydoc, 'YJS-main').config
 const main = useMainStore()
 const templates = computed(() => main.value?.config?.templates ?? [])
-console.log(templates.value)
+//console.log(templates.value)
 
 const onEnd = ({ newIndex, oldIndex }: Record<string, number>) => {
-    const o = JSON.parse(JSON.stringify(templates.value[oldIndex]))
-    templates.value.splice(oldIndex, 1)
-    //nextTick(() => {
-      templates.value.splice(newIndex - (oldIndex < newIndex ? 0 : 0), 0, o)
-    //})
-  //const newT = JSON.parse(JSON.stringify(main.config.templates))
-  //const item = newT.splice(oldIndex, 1)[0]
-  //newT.splice(newIndex, 0, item)
-  //main.config.templates = newT
+  const o = JSON.parse(JSON.stringify(templates.value[oldIndex]))
+  templates.value.splice(oldIndex, 1)
+  templates.value.splice(newIndex - (oldIndex < newIndex ? 0 : 0), 0, o)
 }
 
 const showRaw = ref(false)
 
 const defaultTemplates = () =>
   `
-glutes×10 glutesLoaded1kg×10
+  HighHanche×10 HancheMob×3 Bend×5
+Glutes×10 Glutes:1kg×10
 Vipa+Butterfly×10 Vipa+WideButterfly×10
 DosCassé×10 EssuiGlace×10
 Chevilles×10 TrapèzeBalancier×10
-HighHanche×10 HancheMob×3 Bend×5
 QuadMur×10
 Squat×10
 SquatLoaded×10
@@ -100,111 +73,51 @@ function setTestConfig() {
     superman: '🦸',
   }
   m.config.colors =  {
-      HighHanche: '#00ff00',
-      HancheMob: '#00ff00',
-      Bend: '#00ff00',
-      //
-      'Vipa+Butterfly': '#00ffff',
-      'Vipa+WideButterfly': '#00ffff',
-      DosCassé: '#00ffff',
-      Chevilles: '#00ffff',
-      EssuiGlace: '#00ffff',
-      //
-      TrapèzeBalancier: '#ff8800',
-      Equilibre: '#888800',
-      //
-      Biceps3kg: '#008888',
-      BicepsRunner3kg: '#008888',
-      Triceps3kg: '#008888',
-      Nageur3kg: '#008888',
-      RotateTorso3kg: '#008888',
-      //
-      EquilibreLoaded: '#ff88ff',
-      EquilibrePlaid: '#ff88ff',
-      EquilibrePlaidLoaded: '#ff88ff',
-      //
-      Calf: '#ff0088',
-      CalfBent: '#ff0088',
-      CalfLoaded: '#ff0088',
-      CalfBentLoaded: '#ff0088',
-      //
-      QuadMur: '#8800ff',
-      Squat: '#8800ff',
-      SquatLoaded: '#8800ff',
-      //
-      RenfoFromHell: '#8888ff',
-      Sandi: '#8888ff',
-      Superman: '#8888ff',
-      Genoux: '#8888ff',
-      'PiedsNus(tours)': '#8888ff',
-    }
-  /*
-  main.config.templates = [
-    ...defaultTemplates(),
-    {
-      name: '@comment',
-      activity: '@comment',
-      quantity: 1,
-    },
-  ]
-    */
-  /*
-  main.config = {
-    templates: [
-      ...defaultTemplates(),
-      {
-        name: '@comment',
-        activity: '@comment',
-        quantity: 1,
-      },
-    ],
-    shortNames: {
-      superman: '🦸',
-    },
-    colors: {
-      HighHanche: '#00ff00',
-      HancheMob: '#00ff00',
-      Bend: '#00ff00',
-      //
-      'Vipa+Butterfly': '#00ffff',
-      'Vipa+WideButterfly': '#00ffff',
-      DosCassé: '#00ffff',
-      Chevilles: '#00ffff',
-      EssuiGlace: '#00ffff',
-      //
-      TrapèzeBalancier: '#ff8800',
-      Equilibre: '#888800',
-      //
-      Biceps3kg: '#008888',
-      BicepsRunner3kg: '#008888',
-      Triceps3kg: '#008888',
-      Nageur3kg: '#008888',
-      RotateTorso3kg: '#008888',
-      //
-      EquilibreLoaded: '#ff88ff',
-      EquilibrePlaid: '#ff88ff',
-      EquilibrePlaidLoaded: '#ff88ff',
-      //
-      Calf: '#ff0088',
-      CalfBent: '#ff0088',
-      CalfLoaded: '#ff0088',
-      CalfBentLoaded: '#ff0088',
-      //
-      QuadMur: '#8800ff',
-      Squat: '#8800ff',
-      SquatLoaded: '#8800ff',
-      //
-      RenfoFromHell: '#8888ff',
-      Sandi: '#8888ff',
-      Superman: '#8888ff',
-      Genoux: '#8888ff',
-      'PiedsNus(tours)': '#8888ff',
-    },
+    HighHanche: '#00ff00',
+    HancheMob: '#00ff00',
+    Bend: '#00ff00',
+    //
+    Glutes: '#881111',
+    'Glutes:1kg': '#881111',
+    //
+    'Vipa+Butterfly': '#00ffff',
+    'Vipa+WideButterfly': '#00ffff',
+    DosCassé: '#00ffff',
+    Chevilles: '#00ffff',
+    EssuiGlace: '#00ffff',
+    //
+    TrapèzeBalancier: '#ff8800',
+    Equilibre: '#888800',
+    //
+    Biceps3kg: '#008888',
+    BicepsRunner3kg: '#008888',
+    Triceps3kg: '#008888',
+    Nageur3kg: '#008888',
+    RotateTorso3kg: '#008888',
+    //
+    EquilibreLoaded: '#ff88ff',
+    EquilibrePlaid: '#ff88ff',
+    EquilibrePlaidLoaded: '#ff88ff',
+    //
+    Calf: '#ff0088',
+    CalfBent: '#ff0088',
+    CalfLoaded: '#ff0088',
+    CalfBentLoaded: '#ff0088',
+    //
+    QuadMur: '#8800ff',
+    Squat: '#8800ff',
+    SquatLoaded: '#8800ff',
+    //
+    RenfoFromHell: '#8888ff',
+    Sandi: '#8888ff',
+    Superman: '#8888ff',
+    Genoux: '#8888ff',
+    'PiedsNus(tours)': '#8888ff',
   }
-  if (main.data.logs === undefined) {
-    main.data.logs = {}
+
+  if (m.data.logs === undefined) {
+    m.data.logs = {}
   }
-    */
 }
 
 function promptEdit(e: Record<string, string>, field: string, forbiddenNames: string[] = []) {
@@ -218,25 +131,12 @@ function promptEdit(e: Record<string, string>, field: string, forbiddenNames: st
   }
 }
 
-
-const logEvent = (evt: Event, evt2?: Event) => {
-    if (evt2) {
-        console.log("EVENT", evt, evt2);
-    } else {
-        console.log("EVENT", evt);
-    }
-};
 </script>
 
 <template>
   <h3>Templates</h3>
   <button @click="templates.splice(0, 0, { name: 'TODO_'+(''+Math.random()).substring(2), activity: '', quantity: 1 })">Add</button>
-  <Sortable :list="templates" item-key="name" :options="{ handle: '.handle', animation: 150 }"
-  @change="logEvent" @choose="logEvent"
-                @unchoose="logEvent" @start="logEvent" NOATend="logEvent" @add="logEvent"
-                @update="logEvent" @sort="logEvent" @remove="logEvent" @filter="logEvent"
-                @move="logEvent" @clone="logEvent"
-@end="onEnd">
+  <Sortable :list="templates" item-key="name" :options="{ handle: '.handle', animation: 150 }" @end="onEnd">
     <template #item="{ element: e, index: ie }">
       <div :key="e.name">
         <span class="handle" :style="{

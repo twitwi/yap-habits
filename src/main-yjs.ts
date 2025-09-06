@@ -1,6 +1,5 @@
 import * as Y from 'yjs'
 import { WebsocketProvider } from 'y-websocket'
-import { createPiniaYJSPlugin } from 'pinia-plugin-yjs'
 import { IndexeddbPersistence } from 'y-indexeddb'
 import type { Pinia } from 'pinia'
 
@@ -69,7 +68,7 @@ export function getOrAskConfig(LOCAL_STORAGE_KEY = APP_LOCAL_STORAGE_KEY, saveTo
   return config as [string, string, string]
 }
 
-export async function setupYjs(piniaUse: Pinia, { websocket = true, indexeddb = true, pinia = true } = {}) {
+export async function setupYjs({ websocket = true, indexeddb = true } = {}) {
   const ydoc = new Y.Doc()
   const [server, docname, token] = getOrAskConfig()
   const idbkey = `yjs-${docname}` // idb key, can be different
@@ -83,9 +82,6 @@ export async function setupYjs(piniaUse: Pinia, { websocket = true, indexeddb = 
     await new Promise((resolve) => {
       idb!.on('synced', resolve)
     })
-  }
-  if (pinia) {
-    piniaUse.use(createPiniaYJSPlugin({ doc: ydoc }))
   }
   return { ydoc, server, docname, token, idbkey, ws, idb }
 }

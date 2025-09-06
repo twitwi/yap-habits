@@ -16,22 +16,3 @@ export function useMainStore(ydoc? : YDoc) : Ref<Full> {
   ydoc = ydoc ?? yjs.ydoc
   return yjsRef<Full>(ydoc, 'YJS-main')
 }
-
-/*
-export const useMainStore = defineStore(
-  'main',
-  () => {
-    // like setup() in a component
-    const config = ref({
-      templates: [],
-      shortNames: {},
-      colors: {},
-    } as Config)
-    const data = ref({} as Data)
-    return { config, data }
-  },
-  {
-    //sharing: true, // shared through yjs (+ local IDB)
-  },
-)
-*/
