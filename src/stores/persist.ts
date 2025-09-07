@@ -1,8 +1,8 @@
 import { ref, type Ref } from 'vue'
 import { defineStore } from 'pinia'
 import type { Full } from '@/typing'
-import { yjsRef, YDoc } from './useYjs'
 import { yjs } from '@/main'
+import { yjsRef, YDoc } from 'yjs-datatools'
 
 export const useLocalStore = defineStore('local', () => {
   return {

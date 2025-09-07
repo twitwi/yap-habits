@@ -10,7 +10,8 @@ defineProps({
   },
 })
 
-import { APP_LOCAL_STORAGE_KEY, EG_CONFIG } from '@/main-yjs'
+import { APP_LOCAL_STORAGE_KEY } from '@/main'
+import { EG_CONFIG_NOBOX } from 'yjs-datatools'
 import { computed } from 'vue'
 
 const lsvalue = computed({
@@ -21,7 +22,7 @@ const lsvalue = computed({
 })
 </script>
 <template>
-  <input v-if="mode === 'raw'" type="text" v-model="lsvalue" :placeholder="EG_CONFIG" />
+  <input v-if="mode === 'raw'" type="text" v-model="lsvalue" :placeholder="EG_CONFIG_NOBOX" />
   <details v-else-if="mode === 'details'">
     <summary>{{ summary }}</summary>
     <EditLocalStorageConfig style="width: 100%" />
