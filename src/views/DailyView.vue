@@ -35,12 +35,18 @@ const oneDay = 24 * 3600 * 1000 // ms
 function deltaDate(delta: number) {
   const date = new Date(props.day)
   date.setTime(date.getTime() + delta * oneDay)
-  router.push({
+  const to = {
     name: 'day',
     params: {
       day: date.toISOString().split('T')[0],
     },
-  })
+  }
+  const shouldReplace = router.currentRoute.value.name === 'day' || router.currentRoute.value.name === 'today'
+  if (shouldReplace) {
+    router.replace(to)
+  } else {
+    router.push(to)
+  }
 }
 
 function shortClean(name: string) {
